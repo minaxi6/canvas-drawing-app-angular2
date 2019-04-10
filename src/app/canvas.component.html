@@ -1,1 +1,12 @@
-<canvas (mousemove)="mouseMove($event)" #canvas></canvas>
+<canvas (mousemove)="mouseMove($event)" class="canvas" #canvas></canvas>
+<br>
+<button id="eraser" class="custom" width="30" (click)="drawLine()" ><img src="/assets/simple-outline-pencil-icon-symbol-vector-20028569.jpg" width="50" height="33"></button>
+&nbsp;
+<button id="eraser" (click)="eraseLine()" > <img src="/assets/Eraser-icon-by-rudezstudio-580x386.jpg" width="50"></button>
+
+<!-- <span [(colorPicker)]="color" 
+      [cpPosition]="'bottom'"
+      [style.color]="color"
+      [cpPositionOffset]="'50%'"
+      [cpPositionRelativeToArrow]="true">Change me!</span> -->
+            

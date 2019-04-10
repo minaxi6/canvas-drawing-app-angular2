@@ -5,10 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CanvasComponent } from './canvas.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
     CanvasComponent
+    
   ],
   imports: [
     BrowserModule,
