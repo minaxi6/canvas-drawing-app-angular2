@@ -1,10 +1,9 @@
 .canvas{
     border: 1px solid #000; 
     margin-left:20px;
+    cursor: move;
 }
 
 
 
-  .custom {
-    cursor: url('/assets/177493-200.cur '),auto;
-  }
+  

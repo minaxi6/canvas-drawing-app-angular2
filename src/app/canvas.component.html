@@ -1,6 +1,6 @@
-<canvas class="canvas" #canvas (mousedown)="mdEvent($event)" (mouseup)="muEvent($event)" (mousemove)=" drawRect($event)"></canvas>
+<canvas class="canvas" #canvas (mousedown)="mdEvent($event)" (mouseup)="muEvent($event)" (mousemove)="mmEvent($event)"></canvas>
 <br><br> &nbsp;
-<button class="custom" (click)="eraseLine()"> Eraser</button>
+<button (click)="eraseLine()"> Eraser</button>
 &nbsp; &nbsp;
 <select name="list1" (change)="colorPencil($event.target.value)">
     <option>Choose Pencil Color</option>
@@ -14,4 +14,4 @@
     <option>purple</option>
 </select>
 &nbsp;&nbsp;
-<button (click)="drawRectangle($event)" >Rectangle</button>
+<button (click)="draw($event.target.value)" >Circle</button>
