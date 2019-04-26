@@ -15,11 +15,10 @@ export class CanvasComponent implements AfterViewInit {
   @ViewChild('canvas') public canvas: ElementRef;
   @Input() public width = 700;
   @Input() public height = 400;
-  startX:number=null;
-    startY:number=null;
-    drag=false;
+  startX: number = null;
+  startY: number = null;
+  drag = false;
   lastEvent = null;
-  
 
   private cx: CanvasRenderingContext2D;
   constructor(private el: ElementRef, private renderer: Renderer) {
@@ -31,7 +30,6 @@ export class CanvasComponent implements AfterViewInit {
 
     canvasEl.width = this.width;
     canvasEl.height = this.height;
-
     this.cx.lineWidth = 2;
     this.cx.lineCap = 'round';
     this.cx.strokeStyle = '#000';
@@ -83,14 +81,14 @@ export class CanvasComponent implements AfterViewInit {
     this.cx.beginPath();
 
     if (prevPos) {
-      this.cx.moveTo(prevPos.x, prevPos.y);
-      this.cx.lineTo(currentPos.x, currentPos.y);
+      // this.cx.moveTo(prevPos.x, prevPos.y);
+      // this.cx.lineTo(currentPos.x, currentPos.y);
       this.cx.stroke();
     }
   }
 
   eraseLine() {
-    this.cx.lineWidth = 9;
+    this.cx.lineWidth = 5;
     this.cx.strokeStyle = '#ffffff';
   }
 
@@ -107,52 +105,49 @@ export class CanvasComponent implements AfterViewInit {
         var ctx = this.cx;
         ctx.beginPath();
         ctx.arc(this.width * .6, this.height * .6, this.width * .2, 0, Math.PI * 2, true);
-        ctx.moveTo(this.width * 0.80, this.height * .45);
         ctx.strokeStyle = color;
         ctx.stroke();
       }
     }
   }
 
-  mdEvent(e){
+  mdEvent(e) {
     //persist starting position
-    this.startX=e.clientX;
-    this.startY=e.clientY;
-    this.drag=true;
-}
-
-mmEvent(e){
-
-  if(this.drag){
-
-      //draw rectangle on canvas
-      // let sx = this.startX;
-      // let sy = this.startY;
-      // let canvasTop = this.canvas.nativeElement.getBoundingClientRect().top;
-      // let canvasLeft = this.canvas.nativeElement.getBoundingClientRect().left;
-      // let x = sx - canvasLeft;
-      // let y = sy - canvasTop;
-      // let w = e.clientX - canvasLeft - x;
-      // let h = e.clientY - canvasTop - y;
-      let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
-      let y= this.startY- this.canvas.nativeElement.getBoundingClientRect().top;
-      let w = e.clientX -this.canvas.nativeElement.getBoundingClientRect().left - x;
-      let h = e.clientY -this.canvas.nativeElement.getBoundingClientRect().top - y;
-      this.cx.strokeRect(x, y, w, h);
+    this.startX = e.clientX;
+    this.startY = e.clientY;
+    this.drag = true;
   }
 
+  mmEvent(e) {
+
+    if (this.drag) {
+
+      //draw rectangle on canvas
+      let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
+      let y = this.startY - this.canvas.nativeElement.getBoundingClientRect().top;
+      let w = e.clientX - this.canvas.nativeElement.getBoundingClientRect().left - x;
+      let h = e.clientY - this.canvas.nativeElement.getBoundingClientRect().top - y;
+      this.cx.fillStyle = "#FFF";
+      this.cx.fillRect(x, y, w, h);
+      this.cx.strokeRect(x, y, w, h);
+    }
+
+  }
+
+  muEvent(e) {
+    //draw final rectangle on canvas
+    let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
+    let y = this.startY - this.canvas.nativeElement.getBoundingClientRect().top;
+    let w = e.clientX - this.canvas.nativeElement.getBoundingClientRect().left - x;
+    let h = e.clientY - this.canvas.nativeElement.getBoundingClientRect().top - y;
+    this.cx.fillStyle = "#FFF";
+    this.cx.fillRect(x, y, w, h);
+    this.cx.strokeRect(x, y, w, h);
+
+    this.drag = false;
+  }
+
+
+
 }
 
-muEvent(e){
-  //draw final rectangle on canvas
-  let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
-  let y= this.startY- this.canvas.nativeElement.getBoundingClientRect().top;
-  let w = e.clientX -this.canvas.nativeElement.getBoundingClientRect().left - x;
-  let h = e.clientY -this.canvas.nativeElement.getBoundingClientRect().top - y;
-  // this.canvas.nativeElement.getContext("2d").setLineDash([6]);
-  this.canvas.nativeElement.getContext("2d").strokeRect(x, y, w, h);
-
-  this.drag=false;
-}
-
-}
