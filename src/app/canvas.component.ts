@@ -4,6 +4,7 @@ import {
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise } from 'rxjs/operators';
 import { NgStyle } from '@angular/common';
+import { RecursiveTemplateAstVisitor } from '@angular/compiler';
 
 @Component({
   selector: 'app-canvas',
@@ -30,7 +31,7 @@ export class CanvasComponent implements AfterViewInit {
 
     canvasEl.width = this.width;
     canvasEl.height = this.height;
-    this.cx.lineWidth = 2;
+   this.cx.lineWidth = 2;
     this.cx.lineCap = 'round';
     this.cx.strokeStyle = '#000';
 
@@ -91,9 +92,12 @@ export class CanvasComponent implements AfterViewInit {
     this.cx.lineWidth = 5;
     this.cx.strokeStyle = '#ffffff';
   }
+  lineWidth(w){
+    this.cx.lineWidth=w;
+  }
 
   colorPencil(color) {
-    this.cx.lineWidth = 2;
+    //  this.cx.lineWidth = 2;
     this.cx.strokeStyle = color;
   }
 
@@ -119,10 +123,12 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   mmEvent(e) {
+    this.rect(e);
 
+
+  }
+  rect(e) {
     if (this.drag) {
-
-      //draw rectangle on canvas
       let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
       let y = this.startY - this.canvas.nativeElement.getBoundingClientRect().top;
       let w = e.clientX - this.canvas.nativeElement.getBoundingClientRect().left - x;
@@ -131,23 +137,20 @@ export class CanvasComponent implements AfterViewInit {
       this.cx.fillRect(x, y, w, h);
       this.cx.strokeRect(x, y, w, h);
     }
-
   }
 
   muEvent(e) {
     //draw final rectangle on canvas
-    let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
-    let y = this.startY - this.canvas.nativeElement.getBoundingClientRect().top;
-    let w = e.clientX - this.canvas.nativeElement.getBoundingClientRect().left - x;
-    let h = e.clientY - this.canvas.nativeElement.getBoundingClientRect().top - y;
-    this.cx.fillStyle = "#FFF";
-    this.cx.fillRect(x, y, w, h);
-    this.cx.strokeRect(x, y, w, h);
+    // let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
+    // let y = this.startY - this.canvas.nativeElement.getBoundingClientRect().top;
+    // let w = e.clientX - this.canvas.nativeElement.getBoundingClientRect().left - x;
+    // let h = e.clientY - this.canvas.nativeElement.getBoundingClientRect().top - y;
+    // this.cx.fillStyle = "#FFF";
+    // this.cx.fillRect(x, y, w, h);
+    // this.cx.strokeRect(x, y, w, h);
 
     this.drag = false;
   }
-
-
 
 }
 
