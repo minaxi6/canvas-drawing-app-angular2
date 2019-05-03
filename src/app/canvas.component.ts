@@ -18,8 +18,11 @@ export class CanvasComponent implements AfterViewInit {
   @Input() public height = 400;
   startX: number = null;
   startY: number = null;
+  lastX: number = null;
+  lastY: number = null;
   drag = false;
   lastEvent = null;
+  radius = 50;
 
   private cx: CanvasRenderingContext2D;
   constructor(private el: ElementRef, private renderer: Renderer) {
@@ -31,7 +34,7 @@ export class CanvasComponent implements AfterViewInit {
 
     canvasEl.width = this.width;
     canvasEl.height = this.height;
-   this.cx.lineWidth = 2;
+    this.cx.lineWidth = 2;
     this.cx.lineCap = 'round';
     this.cx.strokeStyle = '#000';
 
@@ -82,8 +85,8 @@ export class CanvasComponent implements AfterViewInit {
     this.cx.beginPath();
 
     if (prevPos) {
-      // this.cx.moveTo(prevPos.x, prevPos.y);
-      // this.cx.lineTo(currentPos.x, currentPos.y);
+      //this.cx.moveTo(prevPos.x, prevPos.y);
+      //this.cx.lineTo(currentPos.x, currentPos.y);
       this.cx.stroke();
     }
   }
@@ -92,12 +95,11 @@ export class CanvasComponent implements AfterViewInit {
     this.cx.lineWidth = 5;
     this.cx.strokeStyle = '#ffffff';
   }
-  lineWidth(w){
-    this.cx.lineWidth=w;
+  lineWidth(w) {
+    this.cx.lineWidth = w;
   }
 
   colorPencil(color) {
-    //  this.cx.lineWidth = 2;
     this.cx.strokeStyle = color;
   }
 
@@ -111,46 +113,94 @@ export class CanvasComponent implements AfterViewInit {
         ctx.arc(this.width * .6, this.height * .6, this.width * .2, 0, Math.PI * 2, true);
         ctx.strokeStyle = color;
         ctx.stroke();
+        ctx.closePath();
       }
     }
   }
 
   mdEvent(e) {
     //persist starting position
-    this.startX = e.clientX;
-    this.startY = e.clientY;
+    e.preventDefault();
+    e.stopPropagation();
+    var rect = this.canvas.nativeElement.getBoundingClientRect();
+    this.startX = e.clientX - rect.left;
+    this.startY = e.clientY - rect.top;
     this.drag = true;
+    this.radius = 0;
   }
 
   mmEvent(e) {
-    this.rect(e);
 
-
+    // this.rect(e);
+    if (!this.drag) {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    var rect = this.canvas.nativeElement.getBoundingClientRect();
+    this.lastX = e.clientX - rect.left;
+    this.lastY = e.clientY - rect.top;
+    this.cx.clearRect(0, 0, this.width, this.height);
+    this.drawEllipse(this.startX, this.startY, this.lastX, this.lastY);
   }
+
+  muEvent(e) {
+    if (!this.drag) { return; }
+    e.preventDefault();
+    e.stopPropagation();
+    this.drag = false;
+  }
+
+  // erase() {
+  //   var m = confirm("Want to clear");
+  //   if (m) {
+  //     this.cx.clearRect(0, 0, this.width, this.height);
+  //     document.getElementById("canvasimg").style.display = "none";
+  //   }
+  // }
+
   rect(e) {
     if (this.drag) {
       let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
       let y = this.startY - this.canvas.nativeElement.getBoundingClientRect().top;
       let w = e.clientX - this.canvas.nativeElement.getBoundingClientRect().left - x;
       let h = e.clientY - this.canvas.nativeElement.getBoundingClientRect().top - y;
-      this.cx.fillStyle = "#FFF";
+      this.cx.fillStyle = "#fff";
       this.cx.fillRect(x, y, w, h);
       this.cx.strokeRect(x, y, w, h);
     }
+
   }
 
-  muEvent(e) {
-    //draw final rectangle on canvas
-    // let x = this.startX - this.canvas.nativeElement.getBoundingClientRect().left;
-    // let y = this.startY - this.canvas.nativeElement.getBoundingClientRect().top;
-    // let w = e.clientX - this.canvas.nativeElement.getBoundingClientRect().left - x;
-    // let h = e.clientY - this.canvas.nativeElement.getBoundingClientRect().top - y;
-    // this.cx.fillStyle = "#FFF";
-    // this.cx.fillRect(x, y, w, h);
-    // this.cx.strokeRect(x, y, w, h);
+  drawEllipse(x1, y1, x2, y2) {
 
-    this.drag = false;
+    var radiusX = (x2 - x1) * 0.5,   /// radius for x based on input
+      radiusY = (y2 - y1) * 0.5,   /// radius for y based on input
+      centerX = x1 + radiusX,      /// calc center
+      centerY = y1 + radiusY,
+      step = 0.01,                 /// resolution of ellipse
+      a = step,                    /// counter
+      pi2 = Math.PI * 2 - step;    /// end angle
+
+    /// start a new path
+    this.cx.beginPath();
+
+    /// set start point at angle 0
+    this.cx.moveTo(centerX + radiusX * Math.cos(0),
+      centerY + radiusY * Math.sin(0));
+
+    /// create the ellipse    
+    for (; a < pi2; a += step) {
+      this.cx.lineTo(centerX + radiusX * Math.cos(a),
+        centerY + radiusY * Math.sin(a));
+    }
+
+    /// close it and stroke it for demo
+    this.cx.closePath();
+    this.cx.strokeStyle = '#000';
+    this.cx.stroke();
   }
+
 
 }
 
