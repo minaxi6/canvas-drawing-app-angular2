@@ -17,11 +17,10 @@ export class CanvasComponent implements AfterViewInit {
   @Input() public width = 700;
   @Input() public height = 400;
   startX: number = null;
-  startY: number = null;
-  lastX: number = null;
-  lastY: number = null;
+  startY: number = null
+  mouseX: number = null;
+  mouseY: number = null;
   drag = false;
-  lastEvent = null;
   radius = 50;
 
   private cx: CanvasRenderingContext2D;
@@ -47,20 +46,20 @@ export class CanvasComponent implements AfterViewInit {
     // this will capture all mousedown events from the canvas element
     fromEvent(canvasEl, 'mousedown')
       .pipe(
-        switchMap((e) => {
-          // after a mouse down, we'll record all mouse moves
-          return fromEvent(canvasEl, 'mousemove')
-            .pipe(
-              // we'll stop (and unsubscribe) once the user releases the mouse
-              // this will trigger a 'mouseup' event 
-              takeUntil(fromEvent(canvasEl, 'mouseup')),
-              // we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
-              takeUntil(fromEvent(canvasEl, 'mouseleave')),
-              // pairwise lets us get the previous value to draw a line from
-              // the previous point to the current point    
-              pairwise()
-            )
-        })
+      switchMap((e) => {
+        // after a mouse down, we'll record all mouse moves
+        return fromEvent(canvasEl, 'mousemove')
+          .pipe(
+          // we'll stop (and unsubscribe) once the user releases the mouse
+          // this will trigger a 'mouseup' event 
+          takeUntil(fromEvent(canvasEl, 'mouseup')),
+          // we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
+          takeUntil(fromEvent(canvasEl, 'mouseleave')),
+          // pairwise lets us get the previous value to draw a line from
+          // the previous point to the current point    
+          pairwise()
+          )
+      })
       )
       .subscribe((res: [MouseEvent, MouseEvent]) => {
         const rect = canvasEl.getBoundingClientRect();
@@ -126,22 +125,20 @@ export class CanvasComponent implements AfterViewInit {
     this.startX = e.clientX - rect.left;
     this.startY = e.clientY - rect.top;
     this.drag = true;
-    this.radius = 0;
   }
 
   mmEvent(e) {
 
-    // this.rect(e);
+    /// this.rect(e);
     if (!this.drag) {
       return;
     }
     e.preventDefault();
     e.stopPropagation();
     var rect = this.canvas.nativeElement.getBoundingClientRect();
-    this.lastX = e.clientX - rect.left;
-    this.lastY = e.clientY - rect.top;
-    this.cx.clearRect(0, 0, this.width, this.height);
-    this.drawEllipse(this.startX, this.startY, this.lastX, this.lastY);
+    this.mouseX = e.clientX - rect.left;
+    this.mouseY = e.clientY - rect.top;
+    this.drawEllipse(this.mouseX, this.mouseY);
   }
 
   muEvent(e) {
@@ -151,13 +148,13 @@ export class CanvasComponent implements AfterViewInit {
     this.drag = false;
   }
 
-  // erase() {
-  //   var m = confirm("Want to clear");
-  //   if (m) {
-  //     this.cx.clearRect(0, 0, this.width, this.height);
-  //     document.getElementById("canvasimg").style.display = "none";
-  //   }
-  // }
+  erase() {
+    var m = confirm("Want to clear");
+    if (m) {
+      this.cx.clearRect(0, 0, this.width, this.height);
+      document.getElementById("canvasimg").style.display = "none";
+    }
+  }
 
   rect(e) {
     if (this.drag) {
@@ -172,32 +169,18 @@ export class CanvasComponent implements AfterViewInit {
 
   }
 
-  drawEllipse(x1, y1, x2, y2) {
+  drawEllipse(x, y) {
 
-    var radiusX = (x2 - x1) * 0.5,   /// radius for x based on input
-      radiusY = (y2 - y1) * 0.5,   /// radius for y based on input
-      centerX = x1 + radiusX,      /// calc center
-      centerY = y1 + radiusY,
-      step = 0.01,                 /// resolution of ellipse
-      a = step,                    /// counter
-      pi2 = Math.PI * 2 - step;    /// end angle
-
-    /// start a new path
+    this.cx.clearRect(0, 0, this.width, this.height);
+    this.cx.save();
     this.cx.beginPath();
-
-    /// set start point at angle 0
-    this.cx.moveTo(centerX + radiusX * Math.cos(0),
-      centerY + radiusY * Math.sin(0));
-
-    /// create the ellipse    
-    for (; a < pi2; a += step) {
-      this.cx.lineTo(centerX + radiusX * Math.cos(a),
-        centerY + radiusY * Math.sin(a));
-    }
-
-    /// close it and stroke it for demo
+    this.cx.moveTo(this.startX, this.startY + (y - this.startY) / 2);
+    this.cx.bezierCurveTo(this.startX, this.startY, x, this.startY, x, this.startY + (y - this.startY) / 2);
+    this.cx.bezierCurveTo(x, y, this.startX, y, this.startX, this.startY + (y - this.startY) / 2);
     this.cx.closePath();
-    this.cx.strokeStyle = '#000';
+    this.cx.restore();
+    this.cx.fillStyle = "white";
+    this.cx.fill();
     this.cx.stroke();
   }
 
