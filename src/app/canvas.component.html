@@ -1,10 +1,12 @@
 <canvas class="canvas" #canvas (mousedown)="mdEvent($event)" (mouseup)="muEvent($event)" (mousemove)="mmEvent($event)"></canvas>
-<br><br> &nbsp;
+<br>
+<br> &nbsp;
 <button (click)="eraseLine()"> Eraser</button>
 &nbsp; &nbsp;
-<input type="button" value="clear screen" id="clr" size="23" onclick="erase()">
-&nbsp; &nbsp; Choose Pencil Color: <select name="list1" (change)="colorPencil($event.target.value)">
-   <option> <div style="background:green;"></div>black</option>
+<button type="button" id="clr" size="23" onclick="clearArea()">Clear Screen</button>
+&nbsp; &nbsp; Choose Pencil Color:
+<select name="list1" (change)="colorPencil($event.target.value)">
+    <option>black</option>
     <option>red</option>
     <option>green</option>
     <option>blue</option>
@@ -13,8 +15,8 @@
     <option>yellow</option>
     <option>purple</option>
 </select>
-&nbsp;&nbsp; 
-Choose Line Width: <select name="list2" (change)="lineWidth($event.target.value)">
+&nbsp;&nbsp; Choose Line Width:
+<select name="list2" (change)="lineWidth($event.target.value)">
 
     <option>1</option>
     <option>2</option>
@@ -25,8 +27,7 @@ Choose Line Width: <select name="list2" (change)="lineWidth($event.target.value)
     <option>7</option>
     <option>8</option>
 </select>
-&nbsp;&nbsp;
+<!-- &nbsp;&nbsp;
 <button (click)="draw($event.target.value)">Circle</button>
 &nbsp;&nbsp;
-<button (click)="value=1">Rectangle</button>
-
+<button (click)="value=1">Rectangle</button> -->

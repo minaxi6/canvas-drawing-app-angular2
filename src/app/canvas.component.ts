@@ -91,6 +91,7 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   eraseLine() {
+    console.log("hi------>>>")
     this.cx.lineWidth = 5;
     this.cx.strokeStyle = '#ffffff';
   }
@@ -138,7 +139,8 @@ export class CanvasComponent implements AfterViewInit {
     var rect = this.canvas.nativeElement.getBoundingClientRect();
     this.mouseX = e.clientX - rect.left;
     this.mouseY = e.clientY - rect.top;
-    this.drawEllipse(this.mouseX, this.mouseY);
+    this.drawCircle(this.mouseX, this.mouseY);
+   
   }
 
   muEvent(e) {
@@ -148,12 +150,9 @@ export class CanvasComponent implements AfterViewInit {
     this.drag = false;
   }
 
-  erase() {
-    var m = confirm("Want to clear");
-    if (m) {
-      this.cx.clearRect(0, 0, this.width, this.height);
-      document.getElementById("canvasimg").style.display = "none";
-    }
+  clearArea() {
+    this.cx.setTransform(1, 0, 0, 1, 0, 0);
+    this.cx.clearRect(0, 0, this.width, this.height);
   }
 
   rect(e) {
@@ -169,7 +168,7 @@ export class CanvasComponent implements AfterViewInit {
 
   }
 
-  drawEllipse(x, y) {
+  drawCircle(x, y) {
 
     this.cx.clearRect(0, 0, this.width, this.height);
     this.cx.save();
@@ -182,6 +181,17 @@ export class CanvasComponent implements AfterViewInit {
     this.cx.fillStyle = "white";
     this.cx.fill();
     this.cx.stroke();
+    this.cx.strokeStyle = this.getRandomColor();
+  }
+  
+
+  getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
 
