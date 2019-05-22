@@ -1,8 +1,14 @@
-<canvas class="canvas" #canvas (mousedown)="mdEvent($event)" (mouseup)="muEvent($event)" (mousemove)="mmEvent($event)"></canvas>
+<canvas class="canvas" #canvas (mousemove)="mouseMove($event,false)" (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)"></canvas>
 <br>
 <br> &nbsp;
 <button (click)="eraseLine()"> Eraser</button>
 &nbsp; &nbsp;
+<button (click)="drawPencil()"> Pencil </button>
+&nbsp; &nbsp;
+<button (click)="circle($event)">Circle</button>
+&nbsp;&nbsp;
+<button (click)="rectangle($event)">Rectangle</button>
+&nbsp;&nbsp;
 <button type="button" id="clr" size="23" onclick="clearArea()">Clear Screen</button>
 &nbsp; &nbsp; Choose Pencil Color:
 <select name="list1" (change)="colorPencil($event.target.value)">
@@ -27,7 +33,4 @@
     <option>7</option>
     <option>8</option>
 </select>
-<!-- &nbsp;&nbsp;
-<button (click)="draw($event.target.value)">Circle</button>
 &nbsp;&nbsp;
-<button (click)="value=1">Rectangle</button> -->
