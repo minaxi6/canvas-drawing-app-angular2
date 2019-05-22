@@ -140,7 +140,7 @@ export class CanvasComponent implements AfterViewInit {
     this.mouseX = e.clientX - rect.left;
     this.mouseY = e.clientY - rect.top;
     this.drawCircle(this.mouseX, this.mouseY);
-   
+
   }
 
   muEvent(e) {
@@ -181,18 +181,18 @@ export class CanvasComponent implements AfterViewInit {
     this.cx.fillStyle = "white";
     this.cx.fill();
     this.cx.stroke();
-    this.cx.strokeStyle = this.getRandomColor();
+    //this.cx.strokeStyle = this.getRandomColor();
   }
-  
 
-  getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
+
+  // getRandomColor() {
+  //   var letters = '0123456789ABCDEF';
+  //   var color = '#';
+  //   for (var i = 0; i < 6; i++) {
+  //     color += letters[Math.floor(Math.random() * 16)];
+  //   }
+  //   return color;
+  // }
 
 
 }
